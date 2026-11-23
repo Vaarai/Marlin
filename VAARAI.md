@@ -1,209 +1,205 @@
-# Anet A8 Vaarai — configuration et maintenance
+# Anet A8 Vaarai — configuration and maintenance
 
-## État actuel
+## Current status
 
-- La configuration source définit `NOZZLE_TO_PROBE_OFFSET { 0, -29, -2.06 }`.
-- Le dernier firmware installé connu est le build Marlin 2.1.2.9 du 9 novembre
-  2026 à 21:43:22, avec EEPROM activée et un défaut compilé Z−2,00. La
-  modification source à Z−2,06 n'a pas été téléversée.
-- L'utilisateur a testé et sauvegardé `M851 Z-2.06` en EEPROM ; sa relecture
-  après redémarrage n'a pas été communiquée. Les valeurs EEPROM peuvent différer
-  des défauts compilés : ne pas réinitialiser sans préserver la calibration.
-- Nivellement bilinéaire 2×2 et G34 sont activés. Le maillage sauvegardé a été
-  retrouvé après redémarrage ; G28 désactive sa compensation, à réactiver avec
-  `M420 S1` après vérification d'un maillage valide.
+- Source configuration defines `NOZZLE_TO_PROBE_OFFSET { 0, -29, -2.06 }`.
+- The last known installed firmware is the Marlin 2.1.2.9 build of November 9,
+  2026 at 21:43:22, with EEPROM enabled and compiled Z−2.00 default. The source
+  change to Z−2.06 has not been uploaded.
+- The user tested and saved `M851 Z-2.06` in EEPROM; readback after restart has
+  not been reported. EEPROM values can differ from compiled defaults: do not
+  reset without preserving calibration.
+- 2×2 bilinear leveling and G34 are enabled. The saved mesh was recovered after
+  restart; G28 disables compensation, which can be reactivated with `M420 S1`
+  after checking for a valid mesh.
 
-Les paragraphes datés ci-dessous décrivent des étapes historiques.
+The dated paragraphs below describe historical stages.
 
-**Historique :** nivellement bilinéaire **2×2**, marge40 mm, téléversé
-et vérifié (Marlin2.1.2.9 `Nov 9 2026 18:56:24`, Flash89984/RAM3443). Points de
-sonde X40/180 × Y40/180 ; buse Y69/209 compte tenu de l'offset−29. Aucun G29 ni
-déplacement n'a été exécuté par l'assistant. M503 indique M420 S0 Z10, M851
-X0/Y−29/Z−2. EEPROM désactivée, G28 désactive le maillage et le démarrage Orca
-ne lance pas G29. Premier essai et dégagement pince arrière à valider par utilisateur.
+**Historical:** **2×2** bilinear leveling, 40 mm margin, uploaded and verified
+(Marlin 2.1.2.9 `Nov 9 2026 18:56:24`, flash 89984/RAM 3443). Probe points
+X40/180 × Y40/180; nozzle Y69/209 given offset −29. No G29 or movement executed
+by the assistant. M503 reported M420 S0 Z10, M851 X0/Y−29/Z−2. EEPROM disabled;
+G28 disabled the mesh and Orca startup did not run G29. First test and rear-clip
+clearance required user validation.
 
-**Historique :** Z−2,00 validé par l'utilisateur et enregistré dans
-`Configuration.h`. Build80500 octets / RAM3332 téléversé et vérifié sur COM5 ;
-M115 `Nov 9 2026 18:04:38`, M503 confirme M851 X0/Y−29/Z−2,00. EEPROM désactivée,
-la valeur est persistante dans le firmware. Les paragraphes datés ci-dessous sont historiques.
+**Historical:** user-validated Z−2.00 recorded in `Configuration.h`. Build
+80500 bytes / RAM 3332 uploaded and verified on COM5; M115
+`Nov 9 2026 18:04:38`, M503 confirmed M851 X0/Y−29/Z−2.00. EEPROM disabled;
+the value persisted in firmware.
 
-**Historique :** firmware téléversé `Nov 8 2026 21:24:26`, origine XY prévue
-au coin avant gauche du verre, X_MIN−11/X_MAX242, Y_MIN−11/Y_MAX219 ; sonde au
-centre110/110, buse110/139. M851 X0/Y−29/Z−2,15 relu. Profil Orca offset0x0,
-zone X0..220/Y8..212 pour les pinces. Repère et Z au nouveau point à vérifier
-par l'utilisateur. Les chiffres datés ci-dessous sont historiques.
+**Historical:** firmware uploaded `Nov 8 2026 21:24:26`, XY origin intended at
+the glass front-left corner, X_MIN−11/X_MAX242, Y_MIN−11/Y_MAX219; probe at
+center 110/110, nozzle 110/139. M851 X0/Y−29/Z−2.15 read back. Orca profile
+offset 0x0, area X0..220/Y8..212 for clips. Reference frame and Z at the new
+point remained to be checked by the user.
 
-## Branche de référence
+## Reference branch
 
-- Branche machine : **`anet-a8-vaarai`**, publiée sur `origin` (fork
+- Machine branch: **`anet-a8-vaarai`**, published to `origin` (fork
   `https://github.com/Vaarai/Marlin.git`).
-- Dépôt officiel : `upstream`, `https://github.com/MarlinFirmware/Marlin.git`.
-- Base stable intégrée : **Marlin 2.1.2.9**, tag officiel, commit `7d300b42ac`.
-- Paramètres machine : `Marlin/Configuration.h` et `Marlin/Configuration_adv.h`.
-  Ces fichiers versionnés sont la référence ; ne pas les remplacer par les
-  exemples ou les configurations par défaut lors d’une mise à jour.
+- Official repository: `upstream`, `https://github.com/MarlinFirmware/Marlin.git`.
+- Integrated stable base: **Marlin 2.1.2.9**, official tag, commit `7d300b42ac`.
+- Machine settings: `Marlin/Configuration.h` and `Marlin/Configuration_adv.h`.
+  These versioned files are authoritative; do not replace them with examples or
+  defaults during an update.
 
-La branche machine porte les personnalisations au-dessus des versions officielles.
-Chaque prochaine modification doit être un commit explicite décrivant son objet
-et ses validations. Les sorties `.pio/` ne sont pas versionnées.
+The machine branch carries customizations on top of official releases. Each
+future change should be an explicit commit describing its purpose and validation.
+`.pio/` outputs are not versioned.
 
-## Matériel et fonctions actuels
+## Hardware and features
 
-**Mise à jour du8 novembre2026 :** `M851 X0/Y−29/Z−2,15` est installé et relu
-après flash (Marlin2.1.2.9 `Nov 8 2026 19:22:05`, 80500 octets vérifiés).
-Z−2,15 est validé au papier par l’utilisateur au point précédent ; le recontrôle
-au nouveau point sûr reste à faire. L’origine Orca corrigée est **−11x−17** et
-le point sûr courant est sonde121/117, buse121/146. Les paragraphes de build et
-coordonnées datés ci-dessous décrivent les étapes précédentes.
+**Historical November 8, 2026 update:** `M851 X0/Y−29/Z−2.15` was installed and
+read back after flashing (Marlin 2.1.2.9 `Nov 8 2026 19:22:05`, 80500 bytes
+verified). The user validated Z−2.15 with paper at the previous point; checking
+the new safe point remained. Corrected Orca origin was **−11x−17** and the then
+safe point was probe 121/117, nozzle 121/146. Dated build and coordinate entries
+below describe earlier stages.
 
-| Élément | Configuration |
+| Item | Configuration |
 |---|---|
-| Machine | Anet A8 modifiée, **MKS Gen L V2.1**, `BOARD_MKS_GEN_L_V21`, ATmega2560 intégré |
-| Pilotes | DRV8825 X/Y/Z/Z2/E0 |
-| Double Z | Deux pilotes indépendants ; Z2 sur E1, STEP36/DIR34/ENABLE30 |
-| Thermistances | Type 5 pour hotend et plateau |
-| Géométrie firmware | Plateau 220×220 ; minima −33/−10/0 ; maxima 220/220/230 |
-| Pas/mm X/Y/Z/E | 100 / 100 / 400 / 111,112 |
-| Vitesses maximales | 400 / 400 / 8 / 50 mm/s |
-| Accélérations maximales | 500 / 500 / 200 / 1000 mm/s² |
-| Accélérations P/R/T | 500 / 1000 / 500 mm/s² |
-| Mouvement | S-curve, Junction Deviation 0,02 ; arcs G2/G3 |
-| Linear Advance | Activé ; K firmware 0 ; K0,06 fourni par le profil PLA OrcaSlicer |
-| Régulation | PID hotend 22,20 / 1,08 / 114 ; Kc100 ; plateau bang-bang |
-| Protections | Thermiques, watchdog, emergency parser ; extrusion minimale 160 °C |
-| Communication | Série 0, 250000 bauds ; host actions/prompts/notifications |
-| EEPROM | Activée ; réglages persistants avec M500 |
-| Sonde et secours Z | Homing Z sur 3D Touch D11/D19 et Z_SAFE_HOMING installés ; Z−2,06 sauvegardé selon l'utilisateur ; chaîne NC à implémenter |
+| Machine | Modified Anet A8, **MKS Gen L V2.1**, `BOARD_MKS_GEN_L_V21`, integrated ATmega2560 |
+| Drivers | DRV8825 X/Y/Z/Z2/E0 |
+| Dual Z | Two independent drivers; Z2 on E1, STEP36/DIR34/ENABLE30 |
+| Thermistors | Type 5 for hotend and bed |
+| Firmware geometry | Bed 220×220; current XY minima −11/−11, maxima 242/219; Z 0..230 |
+| X/Y/Z/E steps/mm | 100 / 100 / 400 / 111.112 |
+| Maximum speeds | 400 / 400 / 8 / 50 mm/s |
+| Maximum accelerations | 500 / 500 / 200 / 1000 mm/s² |
+| P/R/T accelerations | 500 / 1000 / 500 mm/s² |
+| Motion | S-curve, Junction Deviation 0.02; G2/G3 arcs |
+| Linear Advance | Enabled; firmware K0; K0.06 supplied by the OrcaSlicer PLA profile |
+| Control | Hotend PID 22.20 / 1.08 / 114; Kc100; bang-bang bed |
+| Protections | Thermal, watchdog, emergency parser; minimum extrusion temperature 160 °C |
+| Communication | Serial 0, 250000 baud; host actions/prompts/notifications |
+| EEPROM | Enabled; settings persist with M500 |
+| Probe and Z safety | 3D Touch D11/D19 Z homing and Z_SAFE_HOMING installed; Z−2.06 saved per user; NC chain to implement |
 
-Le switch Z actuel a été signalé comme non fiable ; sa remise en état reste à
-faire. Le `KILL_PIN` standard n’est pas une butée anticollision rapide validée.
+The existing Z switch was reported unreliable and still needs repair. Standard
+`KILL_PIN` is not a validated fast anti-collision stop.
 
-Le matériel a été précisé par l’utilisateur après le premier commit : l’ancienne
-déclaration `BOARD_RAMPS_13_EFB` est remplacée par la cible MKS dédiée. Les
-broches des fonctions actives sont identiques, mais pas celles des servos :
-SERVO0 est **D11** sur cette carte, SERVO1 **D21**. D7 pilote la sortie HE1,
-il ne doit pas être utilisé par une sonde configurée comme sur RAMPS 1.3.
+The user clarified the hardware after the first commit: the old
+`BOARD_RAMPS_13_EFB` declaration was replaced with the dedicated MKS target.
+Active function pins match, but servo pins do not: SERVO0 is **D11** on this
+board, SERVO1 **D21**. D7 drives HE1 and must not be used for a probe configured
+as on RAMPS 1.3.
 
-Câblage de sonde historique : commande/alimentation sur **J24 D11/5V/GND**,
-détection sur **Z+ J8 S(D19)/GND**, en préservant Z− D18 pour le fin de course
-ou la future chaîne NC. BLTOUCH et le homing sur sonde sont activés dans les
-sources ; la surveillance NC reste à faire. Offsets de sonde **`{0,-29,0}`** :
-X0 et Y−29 sont confirmés, **Z reste à calibrer**. Cette configuration est
-téléversée et vérifiée le7 novembre2026 ; M503 confirme **M851 X0/Y−29/Z0**.
+Historical probe wiring: control/power on **J24 D11/5V/GND**, sensing on
+**Z+ J8 S(D19)/GND**, preserving Z− D18 for the endstop or future NC chain.
+BLTOUCH and probe homing enabled in source; NC monitoring remains to be done.
+At that stage probe offsets were **`{0,-29,0}`**: X0 and Y−29 confirmed, Z still
+to calibrate. This configuration was uploaded and verified November 7, 2026;
+M503 confirmed **M851 X0/Y−29/Z0**.
 
-La correction d’origine Orca remesurée **X11/Y−17** est distincte de ces offsets
-de sonde et reste dans le profil slicer ; ne pas les confondre ni les cumuler
-avec une correction M206 sans réexaminer le repère machine.
+The historical remeasured Orca origin correction **X11/Y−17** was distinct from
+probe offsets and remained in the slicer profile; do not confuse them or combine
+them with M206 without reexamining the machine coordinate system.
 
-Essais utilisateur : `M280 P0 S10` sort la pointe, `M280 P0 S90` la rentre,
-`M119` lit `z_probe`. Le mode switch `M280 P0 S60`, si pris en charge, facilite
-la lecture du déclenchement ; attendre une seconde entre commandes. `M401/M402`
-ne conviennent pas à un essai strictement sans mouvement d’axes : le chemin
-de déploiement Marlin peut dégager Z. Les essais exécutés doivent rester limités
-à la sonde seule, selon l’autorisation utilisateur décrite plus bas.
+User tests: `M280 P0 S10` deploys the pin, `M280 P0 S90` retracts it, `M119`
+reads `z_probe`. Switch mode `M280 P0 S60`, if supported, makes triggering
+easier to read; wait one second between commands. `M401/M402` are unsuitable
+for a strictly no-axis-movement test: Marlin's deployment path can clear Z.
+Tests performed by the assistant must remain probe-only, as authorized below.
 
-## Compilation hors ligne
+## Offline build
 
-Depuis la racine du dépôt, avec PlatformIO Core installé :
+From the repository root with PlatformIO Core installed:
 
 ```sh
 pio run -e mega2560
 ```
 
-Pour une validation de migration, commencer par un nettoyage :
+For migration validation, first clean:
 
 ```sh
 pio run -e mega2560 -t clean
 pio run -e mega2560
 ```
 
-Produits : `.pio/build/mega2560/firmware.hex` et `firmware.elf`.
+Outputs: `.pio/build/mega2560/firmware.hex` and `firmware.elf`.
 
-Validation du 26 octobre 2026 : compilation propre réussie sur Atmel AVR 4.0.1,
-Arduino AVR 5.1.0, AVR GCC 7.3.0 ; Flash **66250/253952**, RAM **3198/8192**.
-Seul avertissement : attribution automatique de Z2 au port E1 libre, cohérente
-avec le câblage confirmé. Configuration inchangée par rapport à la version locale
-2.1.2.7 ; aucune adaptation de fonctionnalité requise pour 2.1.2.9.
+October 26, 2026 validation: clean build succeeded on Atmel AVR 4.0.1, Arduino
+AVR 5.1.0, AVR GCC 7.3.0; flash **66250/253952**, RAM **3198/8192**. Only
+warning: automatic Z2 assignment to free E1 port, consistent with confirmed
+wiring. Configuration unchanged from local 2.1.2.7; no feature adaptation
+required for 2.1.2.9.
 
-Après correction de la cible MKS Gen L V2.1, compilation réussie avec les mêmes
-tailles Flash/RAM. Comparaison des broches actives par préprocesseur AVR : moteurs,
-fins de course mini, thermistances, hotend, plateau et ventilateur inchangés.
-La correction de carte est une modification locale postérieure au commit initial.
+After correcting the MKS Gen L V2.1 target, the build succeeded with the same
+flash/RAM sizes. AVR preprocessor comparison of active pins showed motors,
+minimum endstops, thermistors, hotend, bed and fan unchanged. The board fix was
+a local change after the initial commit at that stage.
 
-Build des essais du5 novembre2026, BLTOUCH, M280 et diagnostic natif `PINS_DEBUGGING` :
-**Flash79800/253952, RAM3320/8192**.
-Contrôle du préprocesseur : servo0=D11, sonde=D19, Z−=D18, pull-up de sonde actif,
-homing sur sonde désactivé.
+November 5, 2026 test build, BLTOUCH, M280 and native `PINS_DEBUGGING`:
+**flash 79800/253952, RAM 3320/8192**. Preprocessor check: servo0=D11,
+probe=D19, Z−=D18, probe pull-up enabled, probe homing disabled.
 
-**Installé et vérifié le 5 novembre 2026 sur COM5** : Marlin2.1.2.9,
-compilation `Nov 5 2026 22:49:53`, 79800 octets écrits et vérifiés par avrdude,
-signature ATmega2560 `0x1e9801`. M115 annonce Z_PROBE=1 et M503 conserve les
-réglages principaux. Maintenance USB seule, sans12 V selon le contexte utilisateur.
+**Installed and verified November 5, 2026 on COM5:** Marlin 2.1.2.9, build
+`Nov 5 2026 22:49:53`, 79800 bytes written and verified by avrdude, ATmega2560
+signature `0x1e9801`. M115 reported Z_PROBE=1 and M503 retained main settings.
+USB-only maintenance without 12 V per user context.
 
-M43 S a mesuré une impulsion de contact **8 ms ±4 ms**, compatible BLTouch
-pré-V3.1. M119 réactive le mode switch dans cette version : pointe sortie `open`,
-pointe rentrée `TRIGGERED` à la lecture. La lecture M119 seule n’avait pas capté
-le contact bref. La pointe a été commandée rentrée en fin d’essai.
-Après les irrégularités initiales, une série de cinq M43 S donne **5/5 contacts**,
-largeurs10/8/10/12/12 ms (±4 ms), et l’utilisateur confirme **5 rappels nets**
-au premier contact, sans aide ni aller-retour parasite. La répétabilité en hauteur
-et le homing/palpage restent à valider. Aucun déplacement XYZ/E ni chauffe effectué.
+M43 S measured **8 ms ±4 ms** contact pulse, compatible with pre-V3.1 BLTouch.
+M119 reactivates switch mode in this version: deployed `open`, retracted
+`TRIGGERED` on read. M119 alone missed the brief contact. Pin commanded
+retracted at end. After initial irregularities, five M43 S tests gave **5/5
+contacts**, widths 10/8/10/12/12 ms (±4 ms), and the user confirmed **five clean
+retractions** on first contact without assistance or spurious movement. Height
+repeatability and homing/probing remained to be validated. No XYZ/E movement or
+heating performed.
 
-**Configuration uniquement :** aucun changement sous `Marlin/src/`. Les fonctions
-M280/M119/M43 S sont celles de Marlin ; seul PINS_DEBUGGING a été décommenté
-pour rendre M43 S disponible. Ne pas utiliser M43 T dans ces essais de sonde.
+**Configuration only:** no changes under `Marlin/src/`. M280/M119/M43 S are
+Marlin functions; only PINS_DEBUGGING was uncommented to make M43 S available.
+Do not use M43 T in these probe tests.
 
-Configuration installée le7 novembre2026 : offsets **X0/Y−29/Z0 provisoire**,
-homing Z sur sonde et **Z_SAFE_HOMING** activés. Centre de sonde en coordonnées
-firmware **99/117**, soit buse **99/146**. Calcul : centre de zone utile Orca220×200
-=(110,100), moins correction Orca(11,−17), puis moins offset sonde(0,−29) pour la buse.
-Vérification hors ligne des coordonnées et des courses réussie. Approches Z2 puis1 mm/s.
-Build **Flash80452/253952, RAM3320/8192**, 80452 octets écrits puis vérifiés
-sur COM5, signature `0x1e9801`. M115 : Marlin2.1.2.9, `Nov 7 2026 15:32:26`.
-M503 confirme M8510/−29/0 et M2060/0/0 ; réglages principaux conservés.
-Aucun homing ni mouvement d’axes exécuté par l’assistant. Pointe rentrée, port fermé.
-Ne pas imprimer avec le nouveau homing avant calibration de Z ; M500 ne sauvegarde
-pas cette calibration, qui doit être reportée dans les sources après validation.
-Le homing est ensuite confirmé correct par l’utilisateur ; le Z-offset reste à mesurer.
+Configuration installed November 7, 2026: offsets **X0/Y−29/provisional Z0**,
+probe Z homing and **Z_SAFE_HOMING** enabled. Probe center in firmware
+coordinates **99/117**, nozzle **99/146**. Calculation: Orca 220×200 usable
+area center (110,100), minus Orca correction (11,−17), then minus probe offset
+(0,−29) for the nozzle. Offline coordinate and travel checks passed. Z approach
+2 then 1 mm/s. Build **flash 80452/253952, RAM 3320/8192**, 80452 bytes written
+and verified on COM5, signature `0x1e9801`. M115: Marlin 2.1.2.9,
+`Nov 7 2026 15:32:26`. M503 confirmed M851 0/−29/0 and M206 0/0/0; main settings
+retained. No homing or axis movement by the assistant. Pin retracted, port closed.
+At that stage Z had to be calibrated before printing; M500 could not save it,
+so it had to be entered in source after validation. The user later confirmed
+homing worked; Z-offset still needed measurement at that point.
 
-## Intégrer une prochaine stable
+## Integrate a future stable release
 
-1. Partir de `anet-a8-vaarai`, vérifier `git status` et synchroniser avec le fork
-   par `git pull --ff-only`. L’arbre doit être propre avant intégration.
-2. Vérifier la dernière **release stable officielle**, ses notes et son tag ;
-   ne pas prendre automatiquement une branche de développement ou un tag mobile.
-3. Récupérer le tag exact : `git fetch upstream tag <version>`.
-4. Examiner `git diff HEAD <version> -- Marlin/Configuration.h
-   Marlin/Configuration_adv.h`, les changements de format, les notes de migration,
-   les pins MKS Gen L V2.1 et leur base RAMPS, le HAL AVR et les fonctions actives listées ci-dessus.
-5. Intégrer le tag dans la branche machine avec `git merge <version>`.
-   Résoudre les conflits en conservant les intentions de la configuration machine
-   et en adaptant explicitement les paramètres renommés ou modifiés. Ne pas
-   résoudre globalement par « ours » ou « theirs ».
-6. Vérifier le diff des configurations et les macros effectives, notamment
-   polarités/sens moteurs, broches Z2, thermistances, géométrie, limites, Linear
-   Advance, S-curve, JD et protections ; compiler proprement pour `mega2560`.
-7. Mettre à jour cette fiche avec la base intégrée, les adaptations et le résultat
-   du build ; créer un commit pour les adaptations supplémentaires si nécessaire.
-8. Pousser par `git push origin anet-a8-vaarai`. Garder l’historique publié :
-   les prochaines stables s’intègrent par merge, sans rebase ni push forcé.
+1. Start from `anet-a8-vaarai`, check `git status` and synchronize with the fork
+   using `git pull --ff-only`. The tree must be clean before integration.
+2. Check the latest **official stable release**, its notes and tag; do not
+   automatically take a development branch or moving tag.
+3. Fetch the exact tag: `git fetch upstream tag <version>`.
+4. Examine `git diff HEAD <version> -- Marlin/Configuration.h
+   Marlin/Configuration_adv.h`, format changes, migration notes, MKS Gen L V2.1
+   pins and their RAMPS base, AVR HAL and active features listed above.
+5. Merge the tag into the machine branch using `git merge <version>`. Resolve
+   conflicts preserving machine-configuration intent and explicitly adapt renamed
+   or changed parameters. Do not resolve everything using “ours” or “theirs”.
+6. Check configuration diff and effective macros, particularly polarities/motor
+   direction, Z2 pins, thermistors, geometry, limits, Linear Advance, S-curve,
+   JD and protections; build cleanly for `mega2560`.
+7. Update this document with the integrated base, adaptations and build result;
+   create a commit for additional adaptations if needed.
+8. Push using `git push origin anet-a8-vaarai`. Preserve published history:
+   integrate future stable releases by merge, without rebasing or force-pushing.
 
-## Exécution sur l’imprimante
+## Printer operation
 
-Connexion habituelle : **Raspberry Pi / OctoPrint**. Le contrôleur n’est branché
-au **PC que pour la maintenance, sans alimentation 12 V**. C’est le contexte à
-retenir à l’annonce d’une connexion PC, sauf contradiction. Le 5 V USB peut
-encore alimenter la logique et la sonde ; la pointe n’est donc pas présumée inactive.
+Normal connection: **Raspberry Pi / OctoPrint**. The controller is connected to
+the **PC only for maintenance, without 12 V power**. Retain that context when a
+PC connection is reported unless contradicted. USB 5 V can still power logic
+and probe; the pin must not be assumed inactive.
 
-Les mouvements XYZ, homing, palpage avec déplacement d’axes, extrusion/rétraction
-physique, chauffes, autotunes et lancements/reprises d’impression sont exécutés
-exclusivement par l’utilisateur. L’assistant ne déclenche pas ces actions et
-ne transmet pas de G-code d’impression à la machine.
+XYZ movement, homing, axis-motion probing, physical extrusion/retraction,
+heating, autotuning and starting/resuming prints are performed exclusively by
+the user. The assistant does not trigger these actions or transmit print G-code.
 
-Clarification utilisateur : **la 3D Touch seule peut être actionnée par l’assistant**,
-sans mouvement XYZ/E ni chauffe. Utiliser les commandes directes de servo/état ;
-M401/M402 ne sont pas équivalents, car leur routine peut dégager Z.
+User clarification: **the assistant may operate the 3D Touch alone**, without
+XYZ/E movement or heating. Use direct servo/state commands; M401/M402 are not
+equivalent because their routine can clear Z.
 
-Après installation par l’utilisateur, les lectures `M115`, `M503`, `M119` et
-`M900` servent à comparer la version, les réglages, les états des entrées et la
-disponibilité du Linear Advance avant les essais physiques utilisateur.
+After installation by the user, `M115`, `M503`, `M119` and `M900` readings can
+compare version, settings, input states and Linear Advance availability before
+the user's physical tests.
